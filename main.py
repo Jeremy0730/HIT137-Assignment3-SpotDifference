@@ -1,8 +1,7 @@
-"""Entry point for v1."""
+"""Entry point for the application."""
 
 from app import SpotDiffApp
 
-
 if __name__ == "__main__":
-    SpotDiffApp().mainloop()
-
+    app = SpotDiffApp()
+    app.mainloop()
