@@ -115,16 +115,13 @@ class GameState:
         if not self.is_active:
             return "inactive", None
 
-        # Tolerance makes clicking slightly easier for the user
         tolerance = 10 
 
-        # Check if they clicked an already found difference (ignore it, no penalty)
         for diff in self.found:
             cx, cy, cr = diff
             if math.hypot(x - cx, y - cy) <= cr + tolerance:
                 return "ignored", diff
 
-        # Check if they hit a new difference
         for diff in self.unfound:
             cx, cy, cr = diff
             if math.hypot(x - cx, y - cy) <= cr + tolerance:
@@ -132,12 +129,18 @@ class GameState:
                 self.found.append(diff)
                 return "hit", diff
 
-        # If we reach here, it's a completely wrong click
         self.mistakes += 1
         if self.mistakes >= self.max_mistakes:
             self.is_active = False
             
         return "miss", None
+
+    def reveal_all(self) -> list[tuple[int, int, int]]:
+        """Reveal all remaining differences, end the game, and clear counters."""
+        remaining = list(self.unfound)
+        self.unfound.clear()
+        self.is_active = False
+        return remaining
 
     def is_won(self) -> bool:
         return len(self.unfound) == 0 and self.is_active
